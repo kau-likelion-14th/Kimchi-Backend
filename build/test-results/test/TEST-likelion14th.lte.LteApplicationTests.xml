@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="likelion14th.lte.LteApplicationTests" tests="1" skipped="0" failures="0" errors="0" timestamp="2026-05-14T10:48:38.557Z" hostname="gimseung-ug-ui-MacBookAir.local" time="1.573">
+  <properties/>
+  <testcase name="contextLoads()" classname="likelion14th.lte.LteApplicationTests" time="0.776"/>
+  <system-out><![CDATA[19:48:38.617 [Test worker] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [likelion14th.lte.LteApplicationTests]: LteApplicationTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+19:48:38.654 [Test worker] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration likelion14th.lte.LteApplication for test class likelion14th.lte.LteApplicationTests
+19:48:38.680 [Test worker] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [likelion14th.lte.LteApplicationTests]: LteApplicationTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+19:48:38.681 [Test worker] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration likelion14th.lte.LteApplication for test class likelion14th.lte.LteApplicationTests
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.0.6)
+
+2026-05-14T19:48:38.787+09:00  INFO 18496 --- [lte] [    Test worker] likelion14th.lte.LteApplicationTests     : Starting LteApplicationTests using Java 21.0.11 with PID 18496 (started by name in /Users/name/Documents/lte)
+2026-05-14T19:48:38.788+09:00  INFO 18496 --- [lte] [    Test worker] likelion14th.lte.LteApplicationTests     : No active profile set, falling back to 1 default profile: "default"
+2026-05-14T19:48:39.350+09:00  INFO 18496 --- [lte] [    Test worker] likelion14th.lte.LteApplicationTests     : Started LteApplicationTests in 0.603 seconds (process running for 1.129)
+]]></system-out>
+  <system-err><![CDATA[Mockito is currently self-attaching to enable the inline-mock-maker. This will no longer work in future releases of the JDK. Please add Mockito as an agent to your build as described in Mockito's documentation: https://javadoc.io/doc/org.mockito/mockito-core/latest/org.mockito/org/mockito/Mockito.html#0.3
+WARNING: A Java agent has been loaded dynamically (/Users/name/.gradle/caches/modules-2/files-2.1/net.bytebuddy/byte-buddy-agent/1.17.8/f09415827a71be7ed621c7bd02550678f28bc81c/byte-buddy-agent-1.17.8.jar)
+WARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning
+WARNING: If a serviceability tool is not in use, please run with -Djdk.instrument.traceUsage for more information
+WARNING: Dynamic loading of agents will be disallowed by default in a future release
+]]></system-err>
+</testsuite>
