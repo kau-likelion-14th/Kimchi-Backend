@@ -19,7 +19,7 @@ public class UserProfileController {
     private final UserProfileService userProfileService;
 
     @GetMapping
-    @Operation(summary = "유저 프로칠 조회", description = "유저 아이디를 받아 유저 프로필을 받아오는 api입니다.")
+    @Operation(summary = "유저 프로필 조회", description = "유저 아이디를 받아 유저 프로필을 받아오는 api입니다.")
     public ApiResponse<UserProfileResponse> getUserProfile(
             @RequestParam Long userId
     ) {
