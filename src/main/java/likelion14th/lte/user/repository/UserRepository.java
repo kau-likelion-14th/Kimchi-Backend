@@ -2,7 +2,7 @@ package likelion14th.lte.user.repository;
 
 
 import likelion14th.lte.user.entity.User;
-import org.springdoc.core.converters.models.Pageable;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -19,6 +19,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
             "WHERE u.id != :userId " +
             "AND NOT EXISTS (SELECT f FROM Follow f WHERE f.fromUser.id = :userId AND f.toUser.id = u.id)")
     Page<User> findCanFollowUser(@Param("userId") Long userId, Pageable pageable);
-
+    Optional<User> findByUsername(String username);
 
 }

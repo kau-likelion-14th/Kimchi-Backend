@@ -130,7 +130,7 @@ public class FollowService {
             throw new GeneralException(ErrorCode.USER_NOT_FOUND);
         }
 
-        Page<User> users = userRepository.findCanFollowUsers(userId, pageable);
+        Page<User> users = userRepository.findCanFollowUser(userId, pageable);
 
         return users.map(FollowUserResponse::from);
     }
