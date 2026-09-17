@@ -23,10 +23,11 @@ public class UserProfileController {
     public final UserProfileService userProfileService;
 
     @GetMapping
-    @Operation(summary = "유저 프로필 조회", description = "유저 아이디를 받아 유저 프로필을 받아오는 api입니다.")
+    @Operation(summary = "유저 프로필 조회", description = "로그인한 사용자 본인의 프로필을 받아오는 api입니다.")
     public ApiResponse<UserProfileResponse> getUserProfile(
-            @RequestParam Long userId
+            @AuthenticationPrincipal Jwt jwt
     ) {
+        Long userId = Long.valueOf(jwt.getSubject());
         UserProfileResponse userProfileResponse = userProfileService.getUserProfile(userId);
 
         return ApiResponse.onSuccess(SuccessCode.OK, userProfileResponse);
