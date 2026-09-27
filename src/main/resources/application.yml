@@ -21,34 +21,29 @@ springdoc:
     path: /swagger-ui/index.html
     display-request-duration: true
     operations-sorter: method
-    persist-authorization: true
 
 youtube:
   api-key: ${YOUTUBE_API_KEY}
   api-base: https://www.googleapis.com/youtube/v3
 
----
-# local profile
-spring:
-  config:
-    activate:
-      on-profile: local
-  datasource:
-    url: ${LOCAL_DB_URL}
-    username: ${LOCAL_DB_USERNAME}
-    password: ${LOCAL_DB_PASSWORD}
-    driver-class-name: com.mysql.cj.jdbc.Driver
-  jpa:
-    show-sql : true
-    hibernate:
-      ddl-auto: update
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.MySQLDialect
+# Kakao OAuth
+kakao:
+  client-id: ${KAKAO_REST_API_KEY}
+  client-secret: ${KAKAO_CLIENT_SECRET}
+  redirect-uri: ${KAKAO_REDIRECT_URI:http://localhost:3000/login/oauth2/code/kakao}
+  token-uri: https://kauth.kakao.com/oauth/token
+  user-info-uri: https://kapi.kakao.com/v2/user/me
 
-logging:
-  level:
-    org.hibernate.type.descriptor.sql.BasicBinder: trace
+# Our JWT
+jwt:
+  secret: ${JWT_SECRET}
+  access-exp-ms: ${JWT_EXPIRATION:3600000}
+  refresh-exp-ms: ${JWT_REFRESH_EXPIRATION:1209600000}
+
+auth:
+  cookie:
+    secure: ${AUTH_COOKIE_SECURE:false}
+    same-site: ${AUTH_COOKIE_SAME_SITE:Lax}
 
 
 cloud:
@@ -62,20 +57,26 @@ cloud:
       path:
         location: user/
 
+---
+# local profile
+spring:
+  config:
+    activate:
+      on-profile: local
+  datasource:
+    url: ${LOCAL_DB_URL}
+    username: ${LOCAL_DB_USERNAME}
+    password: ${LOCAL_DB_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.MySQLDialect
 
-kakao:
-  client-id: ${KAKAO_REST_API_KEY}
-  client-secret: ${KAKAO_CLIENT_SECRET}
-  redirect-uri: ${KAKAO_REDIRECT_URI:http://localhost:3000/login/oauth2/code/kakao}
-  token-uri: https://kauth.kakao.com/oauth/token
-  user-info-uri: https://kapi.kakao.com/v2/user/me
-
-jwt:
-  secret: ${JWT_SECRET}
-  access-exp-ms: ${JWT_EXPIRATION:3600000}
-  refresh-exp-ms: ${JWT_REFRESH_EXPIRATION:1209600000}
-
-auth:
-  cookie:
-    secure: ${AUTH_COOKIE_SECURE:false}
-    same-site: ${AUTH_COOKIE_SAME_SITE:Lax}
+logging:
+  level:
+    org.hibernate.type.descriptor.sql.BasicBinder: trace
