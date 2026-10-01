@@ -67,6 +67,7 @@ public enum ErrorCode implements BaseCode { // 실패
     TODO_ROUTINE_RULE_INCONSISTENT(HttpStatus.CONFLICT, "TODO_4091", "루틴 규칙 데이터가 올바르지 않습니다."),
     TODO_DATE_REQUIRED(HttpStatus.BAD_REQUEST, "TODO_4007", "일반 투두는 날짜 입력이 필수입니다."),
     TODO_ROUTINE_TO_NORMAL_NOT_SUPPORTED(HttpStatus.BAD_REQUEST, "TODO_4008", "루틴 투두는 일반 투두로 변경할 수 없습니다. 필요하면 루틴 투두를 삭제하고 원하는 날짜로 일반 투두를 새로 생성해주세요."),
+    TODO_ROUTINE_TYPE_CHANGE_NOT_SUPPORTED(HttpStatus.BAD_REQUEST, "TODO_4009", "일반 투두와 루틴 투두 간의 유형 변경은 지원하지 않습니다. 기존 투두를 삭제하고 새로 생성해주세요."),
     TODO_DATE_NOT_FOUND(HttpStatus.NOT_FOUND, "TODO_4042", "해당 날짜의 투두 기록을 찾을 수 없습니다."),
     ;
     private final HttpStatus httpStatus;
