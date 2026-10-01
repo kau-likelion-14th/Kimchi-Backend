@@ -3,20 +3,28 @@ package likelion14th.lte.user.service;
 import likelion14th.lte.global.api.ErrorCode;
 import likelion14th.lte.global.exception.GeneralException;
 import likelion14th.lte.user.dto.request.CreateTestUserRequest;
+import likelion14th.lte.user.dto.request.UserIntroRequest;
 import likelion14th.lte.user.dto.response.UserProfileResponse;
 import likelion14th.lte.user.entity.User;
 import likelion14th.lte.user.repository.UserRepository;
+import likelion14th.lte.utils.Image.ImageUtil;
+import likelion14th.lte.utils.S3.S3Dto;
+import likelion14th.lte.utils.S3.S3Utils;
+
+import likelion14th.lte.utils.exception.UtilException;
+
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public class UserProfileService {
     private final UserRepository userRepository;
+    private final S3Utils s3Utils;
+    private final ImageUtil imageUtil;
 
     @Transactional
     public UserProfileResponse createTestUser(CreateTestUserRequest request){
@@ -41,5 +49,78 @@ public class UserProfileService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new GeneralException(ErrorCode.USER_NOT_FOUND));
         return UserProfileResponse.from(user);
+    }
+    @Transactional
+    public UserProfileResponse putProfileImage(Long userId, MultipartFile file){
+        User user = userRepository.findById(userId)
+                .orElseThrow(()-> new GeneralException(ErrorCode.USER_NOT_FOUND));
+        try {
+            imageUtil.validateImage(file);
+            ImageUtil.ResizedImage resizedImage =
+                    imageUtil.resizeProfileToPngBytes(file, 256);
+            String originalFilename = file.getOriginalFilename();
+            String baseName = originalFilename.contains(".")
+                    ?originalFilename.substring(originalFilename.lastIndexOf("."))
+                    : originalFilename;
+            S3Dto result =
+                    s3Utils.uploadByte(resizedImage.bytes(), baseName+".png", resizedImage.contentType());
+            if (user.getS3ImageKey()!=null) {
+                s3Utils.deleteFile(user.getS3ImageKey());
+            }
+            user.fixUserProfile(result.getUrl(),result.getKey());
+            return UserProfileResponse.from(user);
+        }catch (UtilException e){
+            throw GeneralException.of(mapToErrorCode(e.getReason()));
+        }
+    }
+
+    @Transactional
+    public UserProfileResponse deleteProfileImage(Long userId){
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new GeneralException(ErrorCode.USER_NOT_FOUND));
+
+        String s3ImageKey = user.getS3ImageKey();
+        if (s3ImageKey == null) {
+            return UserProfileResponse.from(user);
+        }
+        try {
+            s3Utils.deleteFile(s3ImageKey);
+        } catch (UtilException e) {
+            throw GeneralException.of(mapToErrorCode(e.getReason()));
+        }
+        user.fixUserProfile(null, null);
+        return UserProfileResponse.from(user);
+    }
+
+    @Transactional(readOnly = true)
+    public UserProfileResponse getToUserProfile(Long userId, Long toUserId){
+        if (!userRepository.existsById(userId)) {
+            throw new GeneralException(ErrorCode.USER_NOT_FOUND);
+        }
+        User toUser = userRepository.findById(toUserId)
+                .orElseThrow(() -> new GeneralException(ErrorCode.USER_NOT_FOUND));
+        return UserProfileResponse.from(toUser);
+    }
+
+    @Transactional
+    public UserProfileResponse updateIntroduction(Long userId, UserIntroRequest request){
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new GeneralException(ErrorCode.USER_NOT_FOUND));
+
+        user.updateIntroduction(request.getIntroduce());
+        return UserProfileResponse.from(user);
+    }
+
+    private ErrorCode mapToErrorCode(UtilException.Reason reason) {
+        return switch (reason) {
+            case FILE_EMPTY -> ErrorCode.IMAGE_FILE_EMPTY;
+            case FILE_TOO_LARGE -> ErrorCode.IMAGE_TOO_LARGE;
+            case TYPE_NOT_ALLOWED -> ErrorCode.IMAGE_TYPE_NOT_ALLOWED;
+
+            case IMAGE_PROCESS_FAILED -> ErrorCode.IMAGE_PROCESS_FAILED;
+
+            case S3_UPLOAD_FAILED -> ErrorCode.S3_UPLOAD_FAILED;
+            case S3_DELETE_FAILED -> ErrorCode.S3_DELETE_FAILED;
+        };
     }
 }

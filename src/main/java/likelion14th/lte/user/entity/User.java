@@ -52,9 +52,8 @@ public class User extends BaseEntity {
     orphanRemoval = true)
     private List<SavedSong> savedSongs;
 
-
     @Builder(access = AccessLevel.PUBLIC)
-    private User (String providerId, String username, String userTag, String introduction){
+    private User (String providerId, String username, String userTag, String introduction, String s3ImageKey, String profileImage){
         this.providerId = providerId;
         this.username = username;
         this.userTag = userTag;
@@ -63,6 +62,12 @@ public class User extends BaseEntity {
         this.followings = new ArrayList<>();
         this.statistic = Statistic.createDefault();
         this.savedSongs = new ArrayList<>();
+        this.s3ImageKey = s3ImageKey;
+        this.profileImage = profileImage;
+    }
+    public void fixUserProfile(String s3ImageUrl, String s3ImageKey){
+        this.s3ImageKey = s3ImageKey;
+        this.profileImage = s3ImageUrl;
     }
 
     public void updateIntroduction(String introduction) {

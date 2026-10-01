@@ -9,8 +9,9 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 
 @RestController
 @RequestMapping("/api/statistic")
@@ -21,8 +22,9 @@ public class StatisticController {
     @GetMapping
     @Operation(summary = "통계 조회", description = "유저 아이디를 받아 통계(연속 성공일, 최근 30일 완료율, 가장 투두를 많이 완료한 요일)를 조회하는 api입니다.")
     public ApiResponse<StatisticResponse> getStatistic(
-            @RequestParam Long userId
+            @AuthenticationPrincipal Jwt jwt
     ) {
+        Long userId = Long.valueOf(jwt.getSubject());
         StatisticResponse response = statisticService.getStatistic(userId);
         return ApiResponse.onSuccess(SuccessCode.STATISTICS_GET_SUCCESS, response);
     }
