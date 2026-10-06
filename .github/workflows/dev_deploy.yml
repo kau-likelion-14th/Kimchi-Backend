@@ -112,7 +112,8 @@ jobs:
 
           # EB에는 배포할 때마다 새로운 Application Version이 생성됨
           # 현재 시간을 붙여 각 버전의 이름을 서로 다르게 만듦
-          version_label: github-action-${{ steps.current-time.outputs.formattedTime }}
+          # 같은 초에 실행되거나 Re-run 해도 겹치지 않도록 실행 번호(run_id, run_attempt)도 붙임
+          version_label: github-action-${{ steps.current-time.outputs.formattedTime }}-${{ github.run_id }}-${{ github.run_attempt }}
 
           region: 'ap-northeast-2'
 
