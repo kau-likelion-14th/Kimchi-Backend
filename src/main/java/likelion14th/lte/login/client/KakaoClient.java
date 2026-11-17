@@ -9,8 +9,10 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import tools.jackson.databind.JsonNode;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.client.HttpClientErrorException;
 
-
+@Slf4j
 @Component
 
 public class KakaoClient {
@@ -54,7 +56,11 @@ public class KakaoClient {
             return response.get("access_token").asText();
         } catch (GeneralException e) {
             throw e;
+        } catch (HttpClientErrorException e) {
+            log.error("Kakao token error: {} {}", e.getStatusCode(), e.getResponseBodyAsString());
+            throw new GeneralException(ErrorCode.KAKAO_AUTH_FAILED);
         } catch (Exception e) {
+            log.error("Kakao token error", e);
             throw new GeneralException(ErrorCode.KAKAO_AUTH_FAILED);
         }
     }
